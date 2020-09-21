@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -14,11 +15,12 @@ import com.google.android.material.textfield.TextInputLayout;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private TestButton enterButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
 
         final EditText editTextEmail = findViewById(R.id.login_edit_text_email);
         final EditText editTextPassword = findViewById(R.id.login_edit_text_password);
@@ -26,19 +28,22 @@ public class LoginActivity extends AppCompatActivity {
         editTextEmail.addTextChangedListener(watcher);
         editTextPassword.addTextChangedListener(watcher);
 
-        findViewById(R.id.login_button_enter).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TextInputLayout inputLayout = findViewById(R.id.login_edit_text_email_input);
-                inputLayout.setError("Esse email é inválido");
-                editTextEmail.setBackground(ContextCompat.getDrawable(LoginActivity.this, R.drawable.edit_text_background_error));
+        enterButton = findViewById(R.id.login_button_enter);
+        enterButton.setOnClickListener(v -> {
+            enterButton.showProgress(true);
 
-                TextInputLayout inputLayoutP = findViewById(R.id.login_edit_text_password_input);
-                inputLayoutP.setError("Essa senha é inválida");
-                editTextPassword.setBackground(ContextCompat.getDrawable(LoginActivity.this, R.drawable.edit_text_background_error));
-            }
+            new Handler().postDelayed(() -> {
+                enterButton.showProgress(false);
+            }, 3000);
+
+            TextInputLayout inputLayout = findViewById(R.id.login_edit_text_email_input);
+            inputLayout.setError("Esse email é inválido");
+            editTextEmail.setBackground(ContextCompat.getDrawable(LoginActivity.this, R.drawable.edit_text_background_error));
+
+            TextInputLayout inputLayoutP = findViewById(R.id.login_edit_text_password_input);
+            inputLayoutP.setError("Essa senha é inválida");
+            editTextPassword.setBackground(ContextCompat.getDrawable(LoginActivity.this, R.drawable.edit_text_background_error));
         });
-
     }
 
     private TextWatcher watcher = new TextWatcher() {
@@ -50,9 +55,9 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             if (!s.toString().isEmpty()) {
-                findViewById(R.id.login_button_enter).setEnabled(true);
+                enterButton.setEnabled(true);
             } else {
-                findViewById(R.id.login_button_enter).setEnabled(false);
+                enterButton.setEnabled(false);
             }
         }
 
