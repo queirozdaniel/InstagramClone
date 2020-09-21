@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.View;
 import android.widget.EditText;
 
 import com.danielqueiroz.instagramclone.R;
@@ -15,7 +14,7 @@ import com.google.android.material.textfield.TextInputLayout;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private TestButton enterButton;
+    private LoadingButton enterButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

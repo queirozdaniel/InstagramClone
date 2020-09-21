@@ -7,7 +7,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
@@ -19,23 +18,23 @@ import androidx.core.graphics.drawable.DrawableCompat;
 
 import com.danielqueiroz.instagramclone.R;
 
-public class TestButton extends FrameLayout {
+public class LoadingButton extends FrameLayout {
 
     private AppCompatButton button;
     private ProgressBar progressBar;
     private String text;
 
-    public TestButton(@NonNull Context context) {
+    public LoadingButton(@NonNull Context context) {
         super(context);
         setup(context, null);
     }
 
-    public TestButton(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public LoadingButton(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         setup(context, attrs);
     }
 
-    public TestButton(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public LoadingButton(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setup(context, attrs);
     }
@@ -44,8 +43,8 @@ public class TestButton extends FrameLayout {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.button_loading, this, true);
 
-        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.TestButton, 0, 0);
-        text = typedArray.getString(R.styleable.TestButton_text);
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.LoadingButton, 0, 0);
+        text = typedArray.getString(R.styleable.LoadingButton_text);
 
         typedArray.recycle();
         button = (AppCompatButton) getChildAt(0);
