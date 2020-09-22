@@ -9,6 +9,7 @@
     tools:context=".register.presentation.RegisterActivity">
 
     <ScrollView
+        android:id="@+id/register_scrollview"
         android:layout_gravity="bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -23,8 +24,8 @@
                 android:id="@+id/register_fragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:name="com.danielqueiroz.instagramclone.register.presentation.RegisterWelcomeFragment"
-                tools:layout="@layout/fragment_register_welcome"/>
+                android:name="com.danielqueiroz.instagramclone.register.presentation.RegisterPhotoFragment"
+                tools:layout="@layout/fragment_register_photo"/>
 
         </LinearLayout>
 
