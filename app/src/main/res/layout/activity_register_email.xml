@@ -23,8 +23,8 @@
                 android:id="@+id/register_fragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:name="com.danielqueiroz.instagramclone.register.presentation.RegisterNamePasswordFragment"
-                tools:layout="@layout/fragment_register_name_password"/>
+                android:name="com.danielqueiroz.instagramclone.register.presentation.RegisterWelcomeFragment"
+                tools:layout="@layout/fragment_register_welcome"/>
 
         </LinearLayout>
 
