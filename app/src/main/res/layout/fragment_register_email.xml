@@ -30,7 +30,7 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.danielqueiroz.instagramclone.login.presentation.LoadingButton
+    <com.danielqueiroz.instagramclone.common.view.LoadingButton
         android:id="@+id/register_button_next"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

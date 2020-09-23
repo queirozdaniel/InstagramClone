@@ -1,4 +1,4 @@
-package com.danielqueiroz.instagramclone.login.presentation;
+package com.danielqueiroz.instagramclone.common.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
