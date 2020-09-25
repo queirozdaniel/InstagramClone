@@ -1,4 +1,4 @@
-package com.danielqueiroz.instagramclone.main.profile.presentation;
+package com.danielqueiroz.instagramclone.main.home.presentation;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,22 +12,23 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.danielqueiroz.instagramclone.R;
 
-public class ProfileFragment extends Fragment {
+public class HomeFragment extends Fragment {
 
-    public ProfileFragment() { }
+    public HomeFragment() { }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // TODO: app:layout_scrollFlags="scroll" na toolbar
-        View view = inflater.inflate(R.layout.fragment_main_profile, container, false);
+        View view = inflater.inflate(R.layout.fragment_main_home, container, false);
 
-        RecyclerView recyclerView = view.findViewById(R.id.profile_recycler);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        RecyclerView recyclerView = view.findViewById(R.id.home_recycler);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(new PostAdapter());
 
         return view;
@@ -63,7 +64,7 @@ public class ProfileFragment extends Fragment {
         @NonNull
         @Override
         public PostViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return new PostViewHolder(getLayoutInflater().inflate(R.layout.item_profile_grid, parent, false));
+            return new PostViewHolder(getLayoutInflater().inflate(R.layout.item_profile_list, parent, false));
         }
 
         @Override
