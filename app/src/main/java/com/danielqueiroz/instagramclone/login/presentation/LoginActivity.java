@@ -3,10 +3,13 @@ package com.danielqueiroz.instagramclone.login.presentation;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 
 import com.danielqueiroz.instagramclone.R;
@@ -21,6 +24,12 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+       if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+           Window window = getWindow();
+           window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+           window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorAccent));
+       }
 
         final EditText editTextEmail = findViewById(R.id.login_edit_text_email);
         final EditText editTextPassword = findViewById(R.id.login_edit_text_password);
