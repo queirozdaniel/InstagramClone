@@ -15,13 +15,16 @@ import android.widget.EditText;
 import com.danielqueiroz.instagramclone.R;
 import com.danielqueiroz.instagramclone.common.view.AbstractActivity;
 import com.danielqueiroz.instagramclone.common.view.LoadingButton;
+import com.danielqueiroz.instagramclone.login.datasource.LoginDataSource;
+import com.danielqueiroz.instagramclone.login.datasource.LoginLocalDataSource;
 import com.google.android.material.textfield.TextInputLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 
-public class LoginActivity extends AbstractActivity implements LoginView, TextWatcher {
+public class LoginActivity extends AbstractActivity implements LoginView {
 
     @BindView(R.id.login_edit_text_email)
     EditText editTextEmail;
@@ -35,6 +38,8 @@ public class LoginActivity extends AbstractActivity implements LoginView, TextWa
     @BindView(R.id.login_button_enter)
     LoadingButton enterButton;
 
+    LoginPresenter presenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,9 +50,12 @@ public class LoginActivity extends AbstractActivity implements LoginView, TextWa
             window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorAccent));
         }
 
-        editTextEmail.addTextChangedListener(this);
-        editTextPassword.addTextChangedListener(this);
+    }
 
+    @Override
+    protected void onInject() {
+        LoginDataSource dataSource = new LoginLocalDataSource();
+        presenter = new LoginPresenter(this, dataSource);
     }
 
     @Override
@@ -78,34 +86,25 @@ public class LoginActivity extends AbstractActivity implements LoginView, TextWa
     }
 
     @OnClick(R.id.login_button_enter)
-    public void onButtonEnterClick(){
-        enterButton.showProgress(true);
-
-        new Handler().postDelayed(() -> {
-            enterButton.showProgress(false);
-        }, 3000);
-
+    public void onButtonEnterClick() {
+        presenter.login(editTextEmail.getText().toString(), editTextPassword.getText().toString());
     }
 
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+    @OnTextChanged({R.id.login_edit_text_email, R.id.login_edit_text_password})
+    public void onTextChanged(CharSequence s) {
+        enterButton.setEnabled(!editTextEmail.getText().toString().isEmpty() && !editTextPassword.getText().toString().isEmpty());
 
-    }
-
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-        if (!s.toString().isEmpty()) {
-            enterButton.setEnabled(true);
-        } else {
-            enterButton.setEnabled(false);
+        if (s.hashCode() == editTextEmail.getText().hashCode()) {
+            editTextEmail.setBackground(findDrawable(R.drawable.edit_text_background));
+            inputLayoutEmail.setError(null);
+            inputLayoutEmail.setErrorEnabled(false);
+        } else if (s.hashCode() == editTextPassword.getText().hashCode()) {
+            editTextPassword.setBackground(findDrawable(R.drawable.edit_text_background));
+            inputLayoutPassword.setError(null);
+            inputLayoutPassword.setErrorEnabled(false);
         }
-    }
-
-    @Override
-    public void afterTextChanged(Editable s) {
 
     }
-
 
     @Override
     protected int getLayout() {

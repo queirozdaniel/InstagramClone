@@ -1,5 +1,6 @@
 package com.danielqueiroz.instagramclone.common.view;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
@@ -15,28 +16,38 @@ import com.danielqueiroz.instagramclone.login.presentation.LoginActivity;
 
 import butterknife.ButterKnife;
 
-public abstract class AbstractActivity extends AppCompatActivity {
+public abstract class AbstractActivity extends AppCompatActivity implements View {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayout());
         ButterKnife.bind(this);
+
+        onInject();
     }
 
     protected abstract @LayoutRes
     int getLayout();
 
-    public Drawable findDrawable(@DrawableRes int drawableId){
+    public Drawable findDrawable(@DrawableRes int drawableId) {
         return Drawables.getDrawable(this, drawableId);
     }
 
-    public void showProgressBar(){
+    @Override
+    public Context getContext() {
+        return getBaseContext();
+    }
+
+    @Override
+    public void showProgressBar() {
 
     }
 
-    public void hideProgressBar(){
+    @Override
+    public void hideProgressBar() {
 
     }
 
+    protected abstract void onInject();
 }
