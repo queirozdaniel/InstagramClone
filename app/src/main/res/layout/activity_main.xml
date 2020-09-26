@@ -45,10 +45,10 @@
 
             <fragment
                 android:id="@+id/main_fragment"
-                android:name="com.danielqueiroz.instagramclone.main.search.presentation.SearchFragment"
+                android:name="com.danielqueiroz.instagramclone.main.camera.presentation.CameraFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:layout="@layout/fragment_main_search" />
+                tools:layout="@layout/fragment_main_gallery" />
 
         </LinearLayout>
 
