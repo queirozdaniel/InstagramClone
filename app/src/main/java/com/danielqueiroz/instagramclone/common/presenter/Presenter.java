@@ -2,9 +2,9 @@ package com.danielqueiroz.instagramclone.common.presenter;
 
 import com.danielqueiroz.instagramclone.common.model.UserAuth;
 
-public interface Presenter {
+public interface Presenter<T> {
 
-    void onSuccess(UserAuth response);
+    void onSuccess(T response);
     void onError(String message);
     void onComplete();
 

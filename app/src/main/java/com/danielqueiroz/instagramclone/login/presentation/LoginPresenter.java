@@ -10,7 +10,7 @@ import com.danielqueiroz.instagramclone.common.presenter.Presenter;
 import com.danielqueiroz.instagramclone.common.util.Strings;
 import com.danielqueiroz.instagramclone.login.datasource.LoginDataSource;
 
-public class LoginPresenter implements Presenter {
+public class LoginPresenter implements Presenter<UserAuth> {
     private final LoginView view;
     private final LoginDataSource dataSource;
 
