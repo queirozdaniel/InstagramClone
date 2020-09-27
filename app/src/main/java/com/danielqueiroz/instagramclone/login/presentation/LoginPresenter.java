@@ -5,6 +5,7 @@ import android.os.Handler;
 import androidx.annotation.StringRes;
 
 import com.danielqueiroz.instagramclone.R;
+import com.danielqueiroz.instagramclone.common.model.UserAuth;
 import com.danielqueiroz.instagramclone.common.presenter.Presenter;
 import com.danielqueiroz.instagramclone.common.util.Strings;
 import com.danielqueiroz.instagramclone.login.datasource.LoginDataSource;
@@ -26,12 +27,11 @@ public class LoginPresenter implements Presenter {
 
         view.showProgressBar();
         dataSource.login(email, password, this);
-
     }
 
     @Override
-    public void onSuccess() {
-
+    public void onSuccess(UserAuth userAuth) {
+        view.onUserLoged();
     }
 
     @Override
