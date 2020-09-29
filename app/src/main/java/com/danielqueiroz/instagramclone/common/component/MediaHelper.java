@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -19,6 +20,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -27,7 +29,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class MediaHelper {
 
-    private static MediaHelper INSTANCE;
+    private static WeakReference<MediaHelper> INSTANCE;
     private static final int CAMERA_CODE = 985;
     private static final int GALLERY_CODE = 989;
 
@@ -35,26 +37,28 @@ public class MediaHelper {
     private Fragment fragment;
     private Uri mCropImageUri;
     private Uri saveImageUri;
-    private CropImageView cropImageView;
     private OnImageCroppedListener listener;
 
 
     public static MediaHelper getInstance(Activity activity){
-        if (INSTANCE == null)
-            INSTANCE = new MediaHelper();
-        INSTANCE.setActivity(activity);
-        return INSTANCE;
+        if (INSTANCE == null){
+            MediaHelper mediaHelper = new MediaHelper();
+            INSTANCE = new WeakReference<>(mediaHelper);
+            INSTANCE.get().setActivity(activity);
+        }
+        return INSTANCE.get();
     }
 
     public static MediaHelper getInstance(Fragment fragment){
-        if (INSTANCE == null)
-            INSTANCE = new MediaHelper();
-        INSTANCE.setFragment(fragment);
-        return INSTANCE;
+        if (INSTANCE == null){
+            MediaHelper mediaHelper = new MediaHelper();
+            INSTANCE = new WeakReference<>(mediaHelper);
+            INSTANCE.get().setFragment(fragment);
+        }
+        return INSTANCE.get();
     }
 
     public MediaHelper cropView(CropImageView cropImageView){
-        this.cropImageView = cropImageView;
 
         cropImageView.setAspectRatio(1,1);
         cropImageView.setFixedAspectRatio(true);
@@ -62,7 +66,6 @@ public class MediaHelper {
             Uri uri = result.getUri();
             if (uri !=null && listener != null){
                 listener.onImageCropped(uri);
-                cropImageView.setVisibility(View.GONE);
             }
         });
         return this;
@@ -92,6 +95,12 @@ public class MediaHelper {
             }
             if (photoFile != null) {
                 mCropImageUri = FileProvider.getUriForFile(getContext(), "com.danielqueiroz.instagramclone.fileprovider", photoFile);
+
+                SharedPreferences myPrefs = getContext().getSharedPreferences("camera_image", 0);
+                SharedPreferences.Editor editor = myPrefs.edit();
+                editor.putString("url", mCropImageUri.toString());
+                editor.apply();
+
                 i.putExtra(MediaStore.EXTRA_OUTPUT, mCropImageUri);
                 activity.startActivityForResult(i, CAMERA_CODE);
             }
@@ -112,6 +121,12 @@ public class MediaHelper {
     }
 
     public void onActivitResult(int requestCode, int resultCode, Intent data) {
+        SharedPreferences myPrefs = getContext().getSharedPreferences("camera_image", 0);
+        String url = myPrefs.getString("url", null);
+
+        if (mCropImageUri != null && url != null)
+            mCropImageUri = Uri.parse(url);
+
         if (requestCode == CAMERA_CODE && resultCode == RESULT_OK){
             if (CropImage.isReadExternalStoragePermissionsRequired(getContext(), mCropImageUri)){
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M){
@@ -121,19 +136,15 @@ public class MediaHelper {
                         fragment.requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, CropImage.PICK_IMAGE_PERMISSIONS_REQUEST_CODE);
                 }
             } else {
-                startCropImageActivity();
+                listener.onImagePicked(mCropImageUri);
             }
         } else if (requestCode == GALLERY_CODE && resultCode == RESULT_OK) {
             mCropImageUri = CropImage.getPickImageResultUri(getContext(), data);
-            startCropImageActivity();
+            listener.onImagePicked(mCropImageUri);
         }
     }
 
-    private void startCropImageActivity() {
-        cropImageView.setImageUriAsync(mCropImageUri);
-    }
-
-    public void cropImage() {
+    public void cropImage(CropImageView cropImageView) {
         File getImage = getContext().getExternalCacheDir();
         if (getImage != null){
             saveImageUri = Uri.fromFile(new File(getImage.getPath(), System.currentTimeMillis() + ".jpeg"));
@@ -150,5 +161,7 @@ public class MediaHelper {
 
     public interface OnImageCroppedListener {
         void onImageCropped(Uri uri);
+
+        void onImagePicked(Uri uri);
     }
 }

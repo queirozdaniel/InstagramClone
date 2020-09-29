@@ -46,18 +46,21 @@ public class RegisterActivity extends AbstractActivity implements RegisterView, 
     @BindView(R.id.register_button_crop)
     Button buttonCrop;
 
+    private MediaHelper mediaHelper;
+    private RegisterPresenter presenter;
+
     public static void launch(Context context) {
         Intent intent = new Intent(context, RegisterActivity.class);
         context.startActivity(intent);
     }
 
-    private RegisterPresenter presenter;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStatusBarDark();
-
+        mediaHelper = MediaHelper.getInstance(this)
+            .cropView(cropImageView)
+            .listener(this);
     }
 
     @Override
@@ -71,6 +74,11 @@ public class RegisterActivity extends AbstractActivity implements RegisterView, 
     @Override
     public void onImageCropped(Uri uri) {
         presenter.setUri(uri);
+    }
+
+    @Override
+    public void onImagePicked(Uri uri) {
+        cropImageView.setImageUriAsync(uri);
     }
 
     @Override
@@ -119,27 +127,22 @@ public class RegisterActivity extends AbstractActivity implements RegisterView, 
 
     @Override
     public void showCamera() {
-        MediaHelper.getInstance(this)
-                .cropView(cropImageView)
-                .listener(this)
-                .chooserCamera();
+       mediaHelper.chooserCamera();
     }
 
     @Override
     public void showGallery() {
-        MediaHelper.getInstance(this)
-                .cropView(cropImageView)
-                .listener(this)
-                .chooserGallery();
+        mediaHelper.chooserGallery();
     }
 
     @OnClick(R.id.register_button_crop)
     public void onButtonCropClick(){
         cropViewEnabled(false);
-        MediaHelper.getInstance(this).cropImage();
+        MediaHelper.getInstance(this).cropImage(cropImageView);
     }
 
     private void cropViewEnabled(boolean enabled) {
+        cropImageView.setVisibility(enabled ? View.VISIBLE : View.GONE);
         scrollView.setVisibility(enabled ? View.GONE : View.VISIBLE);
         buttonCrop.setVisibility(enabled ? View.VISIBLE : View.GONE);
         rootContainer.setBackgroundColor(enabled ? findColor(android.R.color.black) : findColor(android.R.color.white));
