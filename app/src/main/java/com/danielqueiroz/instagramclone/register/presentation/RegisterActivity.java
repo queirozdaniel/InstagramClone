@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -32,7 +33,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public class RegisterActivity extends AbstractActivity implements RegisterView{
+public class RegisterActivity extends AbstractActivity implements RegisterView, MediaHelper.OnImageCroppedListener{
     @BindView(R.id.register_root_container)
     FrameLayout rootContainer;
 
@@ -61,9 +62,15 @@ public class RegisterActivity extends AbstractActivity implements RegisterView{
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         cropViewEnabled(true);
         MediaHelper mediaHelper = MediaHelper.getInstance(this);
-        mediaHelper.onActivitResult(requestCode, resultCode, data),
+        mediaHelper.onActivitResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onImageCropped(Uri uri) {
+        presenter.setUri(uri);
     }
 
     @Override
@@ -112,18 +119,24 @@ public class RegisterActivity extends AbstractActivity implements RegisterView{
 
     @Override
     public void showCamera() {
-
+        MediaHelper.getInstance(this)
+                .cropView(cropImageView)
+                .listener(this)
+                .chooserCamera();
     }
 
     @Override
     public void showGallery() {
         MediaHelper.getInstance(this)
+                .cropView(cropImageView)
+                .listener(this)
                 .chooserGallery();
     }
 
     @OnClick(R.id.register_button_crop)
     public void onButtonCropClick(){
-
+        cropViewEnabled(false);
+        MediaHelper.getInstance(this).cropImage();
     }
 
     private void cropViewEnabled(boolean enabled) {
