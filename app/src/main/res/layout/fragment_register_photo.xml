@@ -5,14 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".register.presentation.RegisterActivity"
-    tools:showIn="@layout/activity_register_email">
+    tools:context=".register.presentation.RegisterActivity">
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/register_camera_icon"
         android:layout_width="wrap_content"
         android:layout_height="120dp"
         android:layout_gravity="center"
         android:layout_marginBottom="24dp"
+        app:civ_border_width="0dp"
+        app:civ_border_color="@color/colorAccent"
         android:src="@drawable/photo_icon"/>
 
     <TextView
@@ -28,7 +30,7 @@
         android:layout_gravity="center"
         />
 
-    <com.danielqueiroz.instagramclone.common.view.LoadingButton
+    <com.danielqueiroz.instagramclone.common.component.LoadingButton
         android:id="@+id/register_button_next"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

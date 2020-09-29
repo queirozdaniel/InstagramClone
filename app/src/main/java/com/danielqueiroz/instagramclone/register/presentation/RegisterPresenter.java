@@ -1,5 +1,7 @@
 package com.danielqueiroz.instagramclone.register.presentation;
 
+import android.net.Uri;
+
 import com.danielqueiroz.instagramclone.R;
 import com.danielqueiroz.instagramclone.common.model.User;
 import com.danielqueiroz.instagramclone.common.model.UserAuth;
@@ -12,12 +14,13 @@ public class RegisterPresenter implements Presenter<UserAuth> {
     private RegisterView registerView;
     private RegisterView.EmailView emailView;
     private RegisterView.NamePasswordView namePasswordView;
+    private RegisterView.PhotoView photoView;
 
     private final RegisterDataSource dataSource;
 
     private String email;
     private String name;
-    private String password;
+    private Uri uri;
 
     public RegisterPresenter(RegisterDataSource dataSource) {
         this.dataSource = dataSource;
@@ -35,6 +38,10 @@ public class RegisterPresenter implements Presenter<UserAuth> {
         this.namePasswordView = namePasswordView;
     }
 
+    public void setPhotoView(RegisterView.PhotoView photoView){
+        this.photoView = photoView;
+    }
+
     public void setEmail(String email){
         if (!Strings.emailValid(email)){
             emailView.onFailureForm(emailView.getContext().getString(R.string.invalid_email));
@@ -50,14 +57,26 @@ public class RegisterPresenter implements Presenter<UserAuth> {
             return;
         }
         this.name = name;
-        this.password = password;
 
         namePasswordView.showProgressBar();
-        dataSource.createUser(this.name, this.email, this.password, this);
+        dataSource.createUser(name, email, password, this);
     }
 
     public String getName() {
         return name;
+    }
+
+    public void setUri(Uri uri){
+        this.uri = uri;
+        this.photoView.onImageCroped(uri);
+    }
+
+    public void showCamera(){
+        registerView.showCamera();
+    }
+
+    public void showGallery(){
+        registerView.showGallery();
     }
 
     public void showPhotoView() {

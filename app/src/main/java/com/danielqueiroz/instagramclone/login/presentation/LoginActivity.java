@@ -1,20 +1,11 @@
 package com.danielqueiroz.instagramclone.login.presentation;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.EditText;
 
 import com.danielqueiroz.instagramclone.R;
 import com.danielqueiroz.instagramclone.common.view.AbstractActivity;
-import com.danielqueiroz.instagramclone.common.view.LoadingButton;
+import com.danielqueiroz.instagramclone.common.component.LoadingButton;
 import com.danielqueiroz.instagramclone.login.datasource.LoginDataSource;
 import com.danielqueiroz.instagramclone.login.datasource.LoginLocalDataSource;
 import com.danielqueiroz.instagramclone.main.presentation.MainActivity;
@@ -22,7 +13,6 @@ import com.danielqueiroz.instagramclone.register.presentation.RegisterActivity;
 import com.google.android.material.textfield.TextInputLayout;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 

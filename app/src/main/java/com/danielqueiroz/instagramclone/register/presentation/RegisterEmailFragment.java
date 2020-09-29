@@ -1,18 +1,10 @@
 package com.danielqueiroz.instagramclone.register.presentation;
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
 import com.danielqueiroz.instagramclone.R;
 import com.danielqueiroz.instagramclone.common.view.AbstractFragment;
-import com.danielqueiroz.instagramclone.common.view.LoadingButton;
+import com.danielqueiroz.instagramclone.common.component.LoadingButton;
 import com.google.android.material.textfield.TextInputLayout;
 
 import butterknife.BindView;
