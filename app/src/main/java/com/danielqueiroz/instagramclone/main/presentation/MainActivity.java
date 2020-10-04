@@ -1,8 +1,10 @@
 package com.danielqueiroz.instagramclone.main.presentation;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -12,6 +14,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -23,11 +26,15 @@ import com.danielqueiroz.instagramclone.common.view.AbstractActivity;
 import com.danielqueiroz.instagramclone.login.presentation.LoginActivity;
 import com.danielqueiroz.instagramclone.main.camera.presentation.CameraFragment;
 import com.danielqueiroz.instagramclone.main.home.presentation.HomeFragment;
+import com.danielqueiroz.instagramclone.main.profile.database.ProfileDatasource;
+import com.danielqueiroz.instagramclone.main.profile.database.ProfileLocalDataSource;
 import com.danielqueiroz.instagramclone.main.profile.presentation.ProfileFragment;
+import com.danielqueiroz.instagramclone.main.profile.presentation.ProfilePresenter;
 import com.danielqueiroz.instagramclone.main.search.presentation.SearchFragment;
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class MainActivity extends AbstractActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AbstractActivity implements BottomNavigationView.OnNavigationItemSelectedListener, MainView {
 
     public static  final int LOGIN_ACTIVITY = 0;
     public static  final int REGISTER_ACTIVITY = 1;
@@ -70,8 +77,11 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
 
     @Override
     protected void onInject() {
-        homeFragment = new HomeFragment();
-        profileFragment = new ProfileFragment();
+        ProfileDatasource profileDatasource = new ProfileLocalDataSource();
+        ProfilePresenter profilePresenter = new ProfilePresenter(profileDatasource);
+
+        homeFragment = HomeFragment.newInstance(this);
+        profileFragment = ProfileFragment.newInstance(this, profilePresenter);
         cameraFragment = new CameraFragment();
         searchFragment = new SearchFragment();
 
@@ -83,23 +93,59 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
         fragmentManager.beginTransaction().add(R.id.main_fragment, searchFragment).hide(searchFragment).commit();
         fragmentManager.beginTransaction().add(R.id.main_fragment, homeFragment).hide(homeFragment).commit();
 
+    }
+
+    @Override
+    public void showProgressBar() {
+        findViewById(R.id.main_progress_bar).setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgressBar() {
+        findViewById(R.id.main_progress_bar).setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+
+        BottomNavigationView bv = findViewById(R.id.main_bottom_nav);
+        bv.setOnNavigationItemSelectedListener(this);
+
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             int source = extras.getInt(ACT_SOURCE);
             if (source == REGISTER_ACTIVITY){
-                fragmentManager.beginTransaction().hide(active).show(profileFragment).commit();
+                getSupportFragmentManager().beginTransaction().hide(active).show(profileFragment).commit();
                 active = profileFragment;
+                scrollToolbarEnebled(true);
             }
         }
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+    }
 
-        BottomNavigationView bv = findViewById(R.id.main_bottom_nav);
-        bv.setOnNavigationItemSelectedListener(this);
+    @Override
+    public void scrollToolbarEnebled(boolean enabled) {
+        Toolbar toolbar = findViewById(R.id.main_toolbar);
+        AppBarLayout appBarLayout = findViewById(R.id.main_appbar);
+
+        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
+        CoordinatorLayout.LayoutParams appBarLayoutParams = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
+
+        if (enabled) {
+            params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
+            appBarLayoutParams.setBehavior(new AppBarLayout.Behavior());
+            appBarLayout.setLayoutParams(appBarLayoutParams);
+        } else {
+            params.setScrollFlags(0);
+            appBarLayoutParams.setBehavior(null);
+            appBarLayout.setLayoutParams(appBarLayoutParams);
+        }
+
     }
 
     @Override
@@ -108,6 +154,7 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
         switch (item.getItemId()){
             case R.id.menu_bottom_home:
                 fm.beginTransaction().hide(active).show(homeFragment).commit();
+                scrollToolbarEnebled(false);
                 active = homeFragment;
                 return true;
             case R.id.menu_bottom_search:
@@ -116,6 +163,7 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
                 return true;
             case R.id.menu_bottom_profile:
                 fm.beginTransaction().hide(active).show(profileFragment).commit();
+                scrollToolbarEnebled(true);
                 active = profileFragment;
                 return true;
             case R.id.menu_bottom_add:

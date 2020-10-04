@@ -7,6 +7,7 @@ public class User {
     private String uuid;
     private String email;
     private String name;
+    private int following, followers, posts;
     private Uri uri;
 
     public String getEmail() {
@@ -39,6 +40,30 @@ public class User {
 
     public void setUri(Uri uri) {
         this.uri = uri;
+    }
+
+    public int getFollowing() {
+        return following;
+    }
+
+    public void setFollowing(int following) {
+        this.following = following;
+    }
+
+    public int getFollowers() {
+        return followers;
+    }
+
+    public void setFollowers(int followers) {
+        this.followers = followers;
+    }
+
+    public int getPosts() {
+        return posts;
+    }
+
+    public void setPosts(int posts) {
+        this.posts = posts;
     }
 
     @Override

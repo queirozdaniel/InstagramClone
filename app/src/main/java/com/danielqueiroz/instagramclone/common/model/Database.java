@@ -3,6 +3,8 @@ package com.danielqueiroz.instagramclone.common.model;
 import android.net.Uri;
 import android.os.Handler;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,6 +13,8 @@ public class Database {
     private static Set<UserAuth> usersAuth;
     private static Set<User> users;
     private static Set<Uri> storages;
+    private static HashMap<String, HashSet<Post>> posts;
+
     private static Database INSTANCE;
     private UserAuth userAuth;
 
@@ -18,6 +22,7 @@ public class Database {
         usersAuth = new HashSet<>();
         users = new HashSet<>();
         storages = new HashSet<>();
+        posts =  new HashMap<>();
 
         //usersAuth.add(new UserAuth("daniel@gmail.com", "1234"));
         //usersAuth.add(new UserAuth("user@gmail.com", "12345"));
@@ -70,6 +75,52 @@ public class Database {
     public Database addCompleteListener(OnCompleteListener listener) {
         this.onCompleteListener = listener;
         return this;
+    }
+
+    public Database findPosts(String uuid){
+        timeout(() -> {
+            HashMap<String, HashSet<Post>> posts = Database.posts;
+            HashSet<Post> res = posts.get(uuid);
+
+            if (res == null) {
+                res = new HashSet<>();
+            }
+
+            if (onSuccessListener != null){
+                onSuccessListener.onSuccess(new ArrayList<>(res));
+            }
+
+            if (onCompleteListener != null)
+                onCompleteListener.onComplete();
+        });
+
+        return this;
+    }
+
+    public Database findUser(String uuid){
+        timeout(()-> {
+            Set<User> users = Database.users;
+            User res = null;
+
+            for (User user : users){
+                if (user.getUuid().equals(uuid)){
+                    res = user;
+                    break;
+                }
+            }
+
+            if (onSuccessListener != null && res != null){
+                onSuccessListener.onSuccess(res);
+            } else if (onFailureListener != null) {
+                onFailureListener.onFailure(new IllegalArgumentException("Usuário não encontrado"));
+            }
+
+            if (onCompleteListener != null)
+                onCompleteListener.onComplete();
+
+        });
+
+        return  this;
     }
 
     public Database addPhoto(String uuid, Uri uri){
