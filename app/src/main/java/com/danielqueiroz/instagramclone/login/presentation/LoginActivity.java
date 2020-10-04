@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.widget.EditText;
 
 import com.danielqueiroz.instagramclone.R;
+import com.danielqueiroz.instagramclone.common.model.Database;
+import com.danielqueiroz.instagramclone.common.model.UserAuth;
 import com.danielqueiroz.instagramclone.common.view.AbstractActivity;
 import com.danielqueiroz.instagramclone.common.component.LoadingButton;
 import com.danielqueiroz.instagramclone.login.datasource.LoginDataSource;
@@ -37,6 +39,10 @@ public class LoginActivity extends AbstractActivity implements LoginView {
         super.onCreate(savedInstanceState);
         setStatusBarDark();
 
+        UserAuth user = Database.getInstance().getUser();
+        if (user != null){
+            onUserLoged();
+        }
     }
 
     @Override
@@ -70,7 +76,8 @@ public class LoginActivity extends AbstractActivity implements LoginView {
     @Override
     public void onUserLoged() {
         // TODO: implementar validação e mandar para Main
-        MainActivity.launch(this);
+        MainActivity.launch(this, MainActivity.LOGIN_ACTIVITY);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     @OnClick(R.id.login_button_enter)
