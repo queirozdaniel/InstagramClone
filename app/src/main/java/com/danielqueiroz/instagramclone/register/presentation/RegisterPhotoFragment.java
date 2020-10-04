@@ -47,6 +47,11 @@ public class RegisterPhotoFragment extends AbstractFragment<RegisterPresenter> i
     }
 
     @Override
+    public void showProgressBar() {
+        buttonNext.showProgress(true);
+    }
+
+    @Override
     public void onImageCroped(Uri uri) {
         try {
             if (getContext() != null && getContext().getContentResolver() != null) {

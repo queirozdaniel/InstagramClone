@@ -1,9 +1,13 @@
 package com.danielqueiroz.instagramclone.common.model;
 
+import android.net.Uri;
+
 public class User {
 
+    private String uuid;
     private String email;
     private String name;
+    private Uri uri;
 
     public String getEmail() {
         return email;
@@ -19,6 +23,22 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public Uri getUri() {
+        return uri;
+    }
+
+    public void setUri(Uri uri) {
+        this.uri = uri;
     }
 
     @Override
