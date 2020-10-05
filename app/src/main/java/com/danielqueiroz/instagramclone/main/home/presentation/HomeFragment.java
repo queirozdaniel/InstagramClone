@@ -10,23 +10,32 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.danielqueiroz.instagramclone.R;
+import com.danielqueiroz.instagramclone.common.model.Feed;
+import com.danielqueiroz.instagramclone.common.view.AbstractFragment;
 import com.danielqueiroz.instagramclone.main.presentation.MainView;
 
-public class HomeFragment extends Fragment {
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+
+public class HomeFragment extends AbstractFragment<HomePresenter> implements MainView.HomeView{
 
     private MainView mainView;
+    private FeedAdapter feedAdapter;
 
-    public static HomeFragment newInstance(MainView mainView) {
+    @BindView(R.id.home_recycler)
+    RecyclerView recyclerView;
 
+    public static HomeFragment newInstance(MainView mainView, HomePresenter presenter) {
         HomeFragment homeFragment = new HomeFragment();
         homeFragment.setMainView(mainView);
-
+        homeFragment.setPresenter(presenter);
+        presenter.setView(homeFragment);
         return homeFragment;
     }
 
@@ -39,12 +48,11 @@ public class HomeFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        // TODO: app:layout_scrollFlags="scroll" na toolbar
-        View view = inflater.inflate(R.layout.fragment_main_home, container, false);
+        View view = super.onCreateView(inflater, container, savedInstanceState);
 
-        RecyclerView recyclerView = view.findViewById(R.id.home_recycler);
+        feedAdapter = new FeedAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new PostAdapter());
+        recyclerView.setAdapter(feedAdapter);
 
         return view;
     }
@@ -56,25 +64,37 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
+    public void showProgressBar() {
+        mainView.showProgressBar();
+    }
+
+    @Override
+    public void hideProgressBar() {
+        mainView.hideProgressBar();
+    }
+
+    @Override
+    public void showFeed(List<Feed> feed) {
+        feedAdapter.setFeed(feed);
+        feedAdapter.notifyDataSetChanged();
+    }
+
+    @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.menu_profile, menu);
     }
 
-    private class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
+    @Override
+    protected int getLayout() {
+        return R.layout.fragment_main_home;
+    }
 
-        private int[] images = new int[]{
-                R.drawable.ic_insta_add,
-                R.drawable.ic_insta_add,
-                R.drawable.ic_insta_add,
-                R.drawable.ic_insta_add,
-                R.drawable.ic_insta_add,
-                R.drawable.ic_insta_add,
-                R.drawable.ic_insta_add,
-                R.drawable.ic_insta_add,
-                R.drawable.ic_insta_add,
-                R.drawable.ic_insta_add,
-                R.drawable.ic_insta_add,
-        };
+
+
+
+    private class FeedAdapter extends RecyclerView.Adapter<PostViewHolder> {
+
+        private List<Feed> feed = new ArrayList<>();
 
         @NonNull
         @Override
@@ -84,13 +104,18 @@ public class HomeFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
-            holder.bind(images[position]);
+            holder.bind(feed.get(position));
         }
 
         @Override
         public int getItemCount() {
-            return images.length;
+            return feed.size();
         }
+
+        public void setFeed(List<Feed> feed) {
+            this.feed = feed;
+        }
+
     }
 
     private class PostViewHolder extends RecyclerView.ViewHolder {
@@ -102,8 +127,8 @@ public class HomeFragment extends Fragment {
             imagePost = itemView.findViewById(R.id.profile_image_grid);
         }
 
-        public void bind(int image){
-            this.imagePost.setImageResource(image);
+        public void bind(Feed feed){
+            this.imagePost.setImageURI(feed.getUri());
         }
     }
 

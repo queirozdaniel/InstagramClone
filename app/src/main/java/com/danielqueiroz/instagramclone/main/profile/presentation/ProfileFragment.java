@@ -87,7 +87,6 @@ public class ProfileFragment extends AbstractFragment<ProfilePresenter>  impleme
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
-        presenter.finUser();
     }
 
     @Override
