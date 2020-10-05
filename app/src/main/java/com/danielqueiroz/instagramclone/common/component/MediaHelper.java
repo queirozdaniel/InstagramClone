@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -157,6 +159,30 @@ public class MediaHelper {
         String imageFileName = "JPEG_" + timestamp + "_";
         File storageDir = getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         return File.createTempFile(imageFileName, ".jpeg", storageDir);
+    }
+
+    public boolean checkCameraHardware(Context context) {
+        return context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA);
+    }
+
+    public Camera getCameraInstance() {
+        Camera camera = null;
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                    && getContext() != null
+                    && getContext().checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
+                if (activity != null)
+                    activity.requestPermissions(new String[]{Manifest.permission.CAMERA}, 300);
+                else
+                    fragment.requestPermissions(new String[]{Manifest.permission.CAMERA}, 300);
+
+            }
+
+            camera = Camera.open();
+        } catch (Exception e) {
+
+        }
+        return camera;
     }
 
     public interface OnImageCroppedListener {

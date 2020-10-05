@@ -2,10 +2,8 @@ package com.danielqueiroz.instagramclone.main.presentation;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -14,17 +12,12 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.FrameLayout;
 
+import com.danielqueiroz.instagramclone.main.camera.presentation.AddActivity;
 import com.danielqueiroz.instagramclone.R;
 import com.danielqueiroz.instagramclone.common.view.AbstractActivity;
-import com.danielqueiroz.instagramclone.login.presentation.LoginActivity;
-import com.danielqueiroz.instagramclone.main.camera.presentation.CameraFragment;
 import com.danielqueiroz.instagramclone.main.home.datasource.HomeDataSource;
 import com.danielqueiroz.instagramclone.main.home.datasource.HomeLocalDataSource;
 import com.danielqueiroz.instagramclone.main.home.presentation.HomeFragment;
@@ -48,7 +41,7 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
 
     Fragment homeFragment;
     Fragment profileFragment;
-    Fragment cameraFragment;
+    // Fragment cameraFragment;
     Fragment searchFragment;
     Fragment active;
 
@@ -92,14 +85,14 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
 
         homeFragment = HomeFragment.newInstance(this, homePresenter);
         profileFragment = ProfileFragment.newInstance(this, profilePresenter);
-        cameraFragment = new CameraFragment();
+        //cameraFragment = new CameraFragment();
         searchFragment = new SearchFragment();
 
         active = homeFragment;
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().add(R.id.main_fragment, profileFragment).hide(profileFragment).commit();
-        fragmentManager.beginTransaction().add(R.id.main_fragment, cameraFragment).hide(cameraFragment).commit();
+        //fragmentManager.beginTransaction().add(R.id.main_fragment, cameraFragment).hide(cameraFragment).commit();
         fragmentManager.beginTransaction().add(R.id.main_fragment, searchFragment).hide(searchFragment).commit();
         fragmentManager.beginTransaction().add(R.id.main_fragment, homeFragment).hide(homeFragment).commit();
 
@@ -183,8 +176,9 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
                 return true;
 
             case R.id.menu_bottom_add:
-                fm.beginTransaction().hide(active).show(cameraFragment).commit();
-                active = cameraFragment;
+                //fm.beginTransaction().hide(active).show(cameraFragment).commit();
+                //active = cameraFragment;
+                AddActivity.launch(this);
                 return true;
         }
 
