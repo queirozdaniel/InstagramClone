@@ -21,6 +21,7 @@ import com.danielqueiroz.instagramclone.common.component.MediaHelper;
 import com.danielqueiroz.instagramclone.common.view.AbstractFragment;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 public class CameraFragment extends AbstractFragment {
 
@@ -60,16 +61,23 @@ public class CameraFragment extends AbstractFragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        setHasOptionsMenu(true);
+    public void onDestroy() {
+        super.onDestroy();
+        if (camera != null) {
+            camera.release();
+        }
     }
 
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_profile, menu);
+    @OnClick(R.id.camera_image_view_picture)
+    public void onCameraButtonClick(){
+        progressBar.setVisibility(View.VISIBLE);
+        buttonCamera.setVisibility(View.GONE);
+        camera.takePicture(null, null, (data, camera) -> {
+            mediaHelper.saveCameraFile(data);
+            progressBar.setVisibility(View.GONE);
+            buttonCamera.setVisibility(View.VISIBLE);
+        });
     }
-
 
     @Override
     protected int getLayout() {
