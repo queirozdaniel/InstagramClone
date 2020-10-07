@@ -7,6 +7,7 @@ import androidx.viewpager.widget.ViewPager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -19,7 +20,7 @@ import com.google.android.material.tabs.TabLayout;
 
 import butterknife.BindView;
 
-public class AddActivity extends AbstractActivity {
+public class AddActivity extends AbstractActivity implements AddView{
 
     @BindView(R.id.add_viewpager)
     ViewPager viewPager;
@@ -67,7 +68,7 @@ public class AddActivity extends AbstractActivity {
         GalleryFragment galleryFragment = new GalleryFragment();
         adapter.add(galleryFragment);
 
-        CameraFragment cameraFragment = new CameraFragment();
+        CameraFragment cameraFragment = CameraFragment.newInstance(this);
         adapter.add(cameraFragment);
 
         adapter.notifyDataSetChanged();
@@ -93,6 +94,12 @@ public class AddActivity extends AbstractActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onImageLoaded(Uri uri) {
+        AddCaptionActivity.launch(this, uri);
+        finish();
     }
 
     @Override

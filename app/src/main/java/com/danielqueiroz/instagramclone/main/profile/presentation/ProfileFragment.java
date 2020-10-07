@@ -161,6 +161,11 @@ public class ProfileFragment extends AbstractFragment<ProfilePresenter>  impleme
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
     private class PostViewHolder extends RecyclerView.ViewHolder {
 
         private final ImageView imagePost;

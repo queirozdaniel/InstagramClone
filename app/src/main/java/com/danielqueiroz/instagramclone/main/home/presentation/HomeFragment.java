@@ -80,6 +80,12 @@ public class HomeFragment extends AbstractFragment<HomePresenter> implements Mai
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        presenter.findFeed();
+    }
+
+    @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.menu_profile, menu);
     }

@@ -53,12 +53,16 @@ public class MediaHelper {
             MediaHelper mediaHelper = new MediaHelper();
             INSTANCE = new WeakReference<>(mediaHelper);
             INSTANCE.get().setActivity(activity);
+        } else if (INSTANCE.get() == null){
+            MediaHelper mediaHelper = new MediaHelper();
+            INSTANCE = new WeakReference<>(mediaHelper);
+            INSTANCE.get().setActivity(activity);
         }
         return INSTANCE.get();
     }
 
     public static MediaHelper getInstance(Fragment fragment) {
-        if (INSTANCE == null) {
+        if (INSTANCE == null || INSTANCE.get() == null) {
             MediaHelper mediaHelper = new MediaHelper();
             INSTANCE = new WeakReference<>(mediaHelper);
             INSTANCE.get().setFragment(fragment);
@@ -191,14 +195,15 @@ public class MediaHelper {
         return camera;
     }
 
-    public void saveCameraFile(byte[] data) {
+    public Uri saveCameraFile(byte[] data) {
         File pictureFile = createCameraFile(true);
 
         if (pictureFile == null){
             Log.d("Teste", "Error create media file temp");
-            return;
+            return null;
         }
 
+        File outputMediaFile = null;
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(pictureFile);
             Bitmap realImage = BitmapFactory.decodeByteArray(data, 0, data.length);
@@ -219,10 +224,10 @@ public class MediaHelper {
             fileOutputStream.close();
 
             Matrix matrix = new Matrix();
-            File outputMediaFile = createCameraFile(false);
+            outputMediaFile = createCameraFile(false);
             if (outputMediaFile == null){
                 Log.d("Teste Out", "Error creating media file, check permissions");
-                return;
+                return null;
             }
 
             Bitmap result = Bitmap.createBitmap(realImage, 0,0, realImage.getWidth(), realImage.getHeight(), matrix, true);
@@ -231,10 +236,11 @@ public class MediaHelper {
             fileOutputStream.close();
 
         } catch (FileNotFoundException e){
-            e.printStackTrace();
+            Log.d("Teste",  e.getMessage());
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.d("Teste",  e.getMessage());
         }
+        return Uri.fromFile(outputMediaFile);
     }
 
     private static Bitmap rotate(Bitmap bitmap, int degree){
