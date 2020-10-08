@@ -7,6 +7,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.danielqueiroz.instagramclone.R;
 import com.danielqueiroz.instagramclone.common.model.Feed;
+import com.danielqueiroz.instagramclone.common.model.User;
 import com.danielqueiroz.instagramclone.common.view.AbstractFragment;
 import com.danielqueiroz.instagramclone.main.presentation.MainView;
 
@@ -127,14 +129,28 @@ public class HomeFragment extends AbstractFragment<HomePresenter> implements Mai
     private class PostViewHolder extends RecyclerView.ViewHolder {
 
         private final ImageView imagePost;
+        private final ImageView imageUser;
+        private final TextView textViewCaption;
+        private final TextView textViewUsername;
+
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
             imagePost = itemView.findViewById(R.id.profile_image_grid);
+            imageUser = itemView.findViewById(R.id.home_container_user_photo);
+            textViewUsername = itemView.findViewById(R.id.home_container_username);
+            textViewCaption = itemView.findViewById(R.id.home_container_user_caption);
         }
 
         public void bind(Feed feed){
             this.imagePost.setImageURI(feed.getUri());
+            this.textViewCaption.setText(feed.getCaption());
+
+            User publisher = feed.getPublisher();
+            if (publisher != null){
+                this.imageUser.setImageURI(publisher.getUri());
+                this.textViewUsername.setText(publisher.getName());
+            }
         }
     }
 

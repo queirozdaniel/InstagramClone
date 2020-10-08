@@ -28,7 +28,7 @@ public class Database {
         feed =  new HashMap<>();
         followers =  new HashMap<>();
 
-        init();
+        //init();
 
         //usersAuth.add(new UserAuth("daniel@gmail.com", "1234"));
         //usersAuth.add(new UserAuth("user@gmail.com", "12345"));
@@ -40,12 +40,13 @@ public class Database {
     private OnCompleteListener onCompleteListener;
 
     public static Database getInstance() {
-        if (INSTANCE == null){
+        return new Database();
+        /*if (INSTANCE == null){
             INSTANCE = new Database();
             INSTANCE.init();
         }
 
-        return INSTANCE;
+        return INSTANCE; */
     }
 
     public static  void init() {

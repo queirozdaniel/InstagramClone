@@ -16,6 +16,8 @@ import android.view.View;
 
 import com.danielqueiroz.instagramclone.R;
 import com.danielqueiroz.instagramclone.common.view.AbstractActivity;
+import com.danielqueiroz.instagramclone.main.camera.datasource.GalleryDataSource;
+import com.danielqueiroz.instagramclone.main.camera.datasource.GalleryLocalDataSource;
 import com.google.android.material.tabs.TabLayout;
 
 import butterknife.BindView;
@@ -65,7 +67,10 @@ public class AddActivity extends AbstractActivity implements AddView{
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
 
-        GalleryFragment galleryFragment = new GalleryFragment();
+        GalleryDataSource galleryDataSource = new GalleryLocalDataSource();
+        GalleryPresenter galleryPresenter = new GalleryPresenter(galleryDataSource);
+
+        GalleryFragment galleryFragment = GalleryFragment.newInstance(this, galleryPresenter);
         adapter.add(galleryFragment);
 
         CameraFragment cameraFragment = CameraFragment.newInstance(this);
