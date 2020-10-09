@@ -5,20 +5,19 @@ import com.danielqueiroz.instagramclone.common.model.Post;
 import com.danielqueiroz.instagramclone.common.model.User;
 import com.danielqueiroz.instagramclone.common.model.UserProfile;
 import com.danielqueiroz.instagramclone.common.presenter.Presenter;
-import com.danielqueiroz.instagramclone.main.profile.presentation.ProfilePresenter;
 
 import java.util.List;
 
 public class ProfileLocalDataSource implements ProfileDatasource {
 
     @Override
-    public void findUser(Presenter<UserProfile> presenter) {
+    public void findUser(String user, Presenter<UserProfile> presenter) {
         Database db = Database.getInstance();
-        db.findUser(db.getUser().getUUID())
-                .addOnSuccessListener((Database.OnSuccessListener<User>) user -> {
-                    db.findPosts(user.getUuid())
+        db.findUser(user)
+                .addOnSuccessListener((Database.OnSuccessListener<User>) usr1 -> {
+                    db.findPosts(usr1.getUuid())
                             .addOnSuccessListener((Database.OnSuccessListener<List<Post>>) post -> {
-                                presenter.onSuccess(new UserProfile(user, post));
+                                presenter.onSuccess(new UserProfile(usr1, post));
                                 presenter.onComplete();
                             });
                 });

@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.danielqueiroz.instagramclone.common.model.Database;
 import com.danielqueiroz.instagramclone.main.camera.presentation.AddActivity;
 import com.danielqueiroz.instagramclone.R;
 import com.danielqueiroz.instagramclone.common.view.AbstractActivity;
@@ -26,7 +27,10 @@ import com.danielqueiroz.instagramclone.main.profile.database.ProfileDatasource;
 import com.danielqueiroz.instagramclone.main.profile.database.ProfileLocalDataSource;
 import com.danielqueiroz.instagramclone.main.profile.presentation.ProfileFragment;
 import com.danielqueiroz.instagramclone.main.profile.presentation.ProfilePresenter;
+import com.danielqueiroz.instagramclone.main.search.datasource.SearchDataSource;
+import com.danielqueiroz.instagramclone.main.search.datasource.SearchLocalDataSource;
 import com.danielqueiroz.instagramclone.main.search.presentation.SearchFragment;
+import com.danielqueiroz.instagramclone.main.search.presentation.SearchPresenter;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -38,6 +42,7 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
 
     private ProfilePresenter profilePresenter;
     private HomePresenter homePresenter;
+    private SearchPresenter searchPresenter;
 
     Fragment homeFragment;
     Fragment profileFragment;
@@ -78,15 +83,16 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
     protected void onInject() {
         ProfileDatasource profileDatasource = new ProfileLocalDataSource();
         HomeDataSource homeDataSource = new HomeLocalDataSource();
+        SearchDataSource searchDataSource = new SearchLocalDataSource();
 
         profilePresenter = new ProfilePresenter(profileDatasource);
         homePresenter = new HomePresenter(homeDataSource);
-
+        searchPresenter = new SearchPresenter(searchDataSource);
 
         homeFragment = HomeFragment.newInstance(this, homePresenter);
         profileFragment = ProfileFragment.newInstance(this, profilePresenter);
         //cameraFragment = new CameraFragment();
-        searchFragment = new SearchFragment();
+        searchFragment = SearchFragment.newInstance(this, searchPresenter);
 
         active = homeFragment;
 
@@ -122,7 +128,7 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
                 getSupportFragmentManager().beginTransaction().hide(active).show(profileFragment).commit();
                 active = profileFragment;
                 scrollToolbarEnebled(true);
-                profilePresenter.finUser();
+                profilePresenter.finUser(Database.getInstance().getUser().getUUID());
             }
         }
     }
@@ -153,6 +159,14 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
     }
 
     @Override
+    public void showProfile(String user) {
+        getSupportFragmentManager().beginTransaction().hide(active).show(profileFragment).commit();
+        active = profileFragment;
+        scrollToolbarEnebled(true);
+        profilePresenter.finUser(user);
+    }
+
+    @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         FragmentManager fm = getSupportFragmentManager();
         switch (item.getItemId()){
@@ -166,12 +180,13 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
             case R.id.menu_bottom_search:
                 fm.beginTransaction().hide(active).show(searchFragment).commit();
                 active = searchFragment;
+                scrollToolbarEnebled(false);
                 return true;
 
             case R.id.menu_bottom_profile:
                 fm.beginTransaction().hide(active).show(profileFragment).commit();
                 scrollToolbarEnebled(true);
-                profilePresenter.finUser();
+                profilePresenter.finUser(Database.getInstance().getUser().getUUID());
                 active = profileFragment;
                 return true;
 

@@ -1,5 +1,6 @@
 package com.danielqueiroz.instagramclone.main.profile.presentation;
 
+import com.danielqueiroz.instagramclone.common.model.Database;
 import com.danielqueiroz.instagramclone.common.model.Post;
 import com.danielqueiroz.instagramclone.common.model.User;
 import com.danielqueiroz.instagramclone.common.model.UserProfile;
@@ -21,9 +22,9 @@ public class ProfilePresenter implements Presenter<UserProfile> {
         this.view = view;
     }
 
-    public void finUser() {
+    public void finUser(String user) {
         view.showProgressBar();
-        datasource.findUser(this);
+        datasource.findUser(user, this);
     }
 
     @Override
@@ -31,10 +32,14 @@ public class ProfilePresenter implements Presenter<UserProfile> {
         User user = response.getUser();
         List<Post> posts = response.getPosts();
 
+        boolean editProfile = user.getUuid().equals(Database.getInstance().getUser().getUUID());
+
         view.showData(user.getName(),
                 String.valueOf(user.getFollowing()),
                 String.valueOf(user.getFollowers()),
-                String.valueOf(user.getPosts()));
+                String.valueOf(user.getPosts()),
+                editProfile
+                );
 
         view.showPosts(posts);
 

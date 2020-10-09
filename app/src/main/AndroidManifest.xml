@@ -29,7 +29,19 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".main.presentation.MainActivity"
-            android:theme="@style/AppTheme" />
+            android:launchMode="singleTop"
+            android:theme="@style/AppTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable"
+                />
+        </activity>
         <activity android:name=".register.presentation.RegisterActivity" />
         <activity android:name=".login.presentation.LoginActivity">
             <intent-filter>

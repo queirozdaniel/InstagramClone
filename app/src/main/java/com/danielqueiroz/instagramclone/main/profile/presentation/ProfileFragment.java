@@ -3,6 +3,7 @@ package com.danielqueiroz.instagramclone.main.profile.presentation;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,20 +11,20 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.danielqueiroz.instagramclone.R;
+import com.danielqueiroz.instagramclone.common.model.Database;
 import com.danielqueiroz.instagramclone.common.model.Post;
 import com.danielqueiroz.instagramclone.common.view.AbstractFragment;
-import com.danielqueiroz.instagramclone.main.home.presentation.HomeFragment;
 import com.danielqueiroz.instagramclone.main.presentation.MainView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -59,6 +60,9 @@ public class ProfileFragment extends AbstractFragment<ProfilePresenter>  impleme
 
     @BindView(R.id.profile_navigation_tabs)
     BottomNavigationView bottomNavigationView;
+
+    @BindView(R.id.profile_button_edit_profile)
+    Button button;
 
     public static ProfileFragment newInstance(MainView mainView, ProfilePresenter presenter) {
         ProfileFragment profileFragment = new ProfileFragment();
@@ -128,11 +132,15 @@ public class ProfileFragment extends AbstractFragment<ProfilePresenter>  impleme
     }
 
     @Override
-    public void showData(String name, String following, String followers, String posts) {
+    public void showData(String name, String following, String followers, String posts, boolean editProfile) {
         txtUsername.setText(name);
         txtFollowingCount.setText(following);
         txtFollowersCount.setText(followers);
         txtPostCount.setText(posts);
+
+        if (editProfile){
+            button.setText(getString(R.string.edit_profile));
+        }
     }
 
     @Override
@@ -180,6 +188,7 @@ public class ProfileFragment extends AbstractFragment<ProfilePresenter>  impleme
     @Override
     public void onResume() {
         super.onResume();
+        presenter.finUser(Database.getInstance().getUser().getUUID());
     }
 
     private class PostViewHolder extends RecyclerView.ViewHolder {
