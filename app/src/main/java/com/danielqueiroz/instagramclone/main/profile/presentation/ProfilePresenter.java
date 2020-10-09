@@ -12,19 +12,36 @@ import java.util.List;
 
 public class ProfilePresenter implements Presenter<UserProfile> {
     private final ProfileDatasource datasource;
+    private final String user;
     private MainView.ProfileView view;
 
     public ProfilePresenter(ProfileDatasource datasource) {
+        this(datasource, Database.getInstance().getUser().getUUID());
+    }
+
+    public ProfilePresenter(ProfileDatasource datasource, String user) {
         this.datasource = datasource;
+        this.user = user;
     }
 
     public void setView(MainView.ProfileView view) {
         this.view = view;
     }
 
-    public void finUser(String user) {
+    public void finUser() {
         view.showProgressBar();
         datasource.findUser(user, this);
+    }
+
+    public void follow(boolean follow){
+        if (follow)
+            datasource.follow(user);
+        else
+            datasource.unfollow(user);
+    }
+
+    public String getUser() {
+        return user;
     }
 
     @Override
@@ -38,7 +55,8 @@ public class ProfilePresenter implements Presenter<UserProfile> {
                 String.valueOf(user.getFollowing()),
                 String.valueOf(user.getFollowers()),
                 String.valueOf(user.getPosts()),
-                editProfile
+                editProfile,
+                response.isFollowing()
                 );
 
         view.showPosts(posts);

@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -33,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileFragment extends AbstractFragment<ProfilePresenter>  implements  MainView.ProfileView{
@@ -132,7 +134,7 @@ public class ProfileFragment extends AbstractFragment<ProfilePresenter>  impleme
     }
 
     @Override
-    public void showData(String name, String following, String followers, String posts, boolean editProfile) {
+    public void showData(String name, String following, String followers, String posts, boolean editProfile, boolean follow) {
         txtUsername.setText(name);
         txtFollowingCount.setText(following);
         txtFollowersCount.setText(followers);
@@ -140,7 +142,21 @@ public class ProfileFragment extends AbstractFragment<ProfilePresenter>  impleme
 
         if (editProfile){
             button.setText(getString(R.string.edit_profile));
+        } else if (follow){
+            button.setText(getString(R.string.unfollow));
+            button.setTag(false);
+        } else {
+            button.setText(getString(R.string.follow));
+            button.setTag(true);
         }
+    }
+
+    @OnClick(R.id.profile_button_edit_profile)
+    public void onButtonFollowClick(){
+        Boolean follow = (Boolean) button.getTag();
+        button.setText(follow ? R.string.unfollow : R.string.follow);
+        presenter.follow(follow);
+        button.setTag(!follow);
     }
 
     @Override
@@ -152,6 +168,17 @@ public class ProfileFragment extends AbstractFragment<ProfilePresenter>  impleme
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.menu_profile, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                if (!presenter.getUser().equals(Database.getInstance().getUser().getUUID()))
+                    mainView.disposeProfileDetail();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -188,7 +215,7 @@ public class ProfileFragment extends AbstractFragment<ProfilePresenter>  impleme
     @Override
     public void onResume() {
         super.onResume();
-        presenter.finUser(Database.getInstance().getUser().getUUID());
+        presenter.finUser();
     }
 
     private class PostViewHolder extends RecyclerView.ViewHolder {

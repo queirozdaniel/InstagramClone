@@ -6,5 +6,6 @@ import com.danielqueiroz.instagramclone.common.presenter.Presenter;
 public interface ProfileDatasource {
 
     void findUser(String user, Presenter<UserProfile> presenter);
-
+    void follow(String user);
+    void unfollow(String user);
 }

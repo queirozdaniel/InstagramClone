@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Context;
 import android.content.Intent;
@@ -50,6 +51,7 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
     Fragment searchFragment;
     Fragment active;
 
+    ProfileFragment profileDetailsFragment;
 
     public static void launch(Context context, int source) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -128,7 +130,7 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
                 getSupportFragmentManager().beginTransaction().hide(active).show(profileFragment).commit();
                 active = profileFragment;
                 scrollToolbarEnebled(true);
-                profilePresenter.finUser(Database.getInstance().getUser().getUUID());
+                profilePresenter.finUser();
             }
         }
     }
@@ -160,10 +162,40 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
 
     @Override
     public void showProfile(String user) {
-        getSupportFragmentManager().beginTransaction().hide(active).show(profileFragment).commit();
-        active = profileFragment;
+
+        ProfileDatasource dataSource = new ProfileLocalDataSource();
+        ProfilePresenter profilePresenter = new ProfilePresenter(dataSource, user);
+
+        profileDetailsFragment = ProfileFragment.newInstance(this, profilePresenter);
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.add(R.id.main_fragment, profileDetailsFragment, "detail");
+        transaction.hide(active);
+        transaction.commit();
         scrollToolbarEnebled(true);
-        profilePresenter.finUser(user);
+
+        if (getSupportActionBar() != null){
+            Drawable drawable = findDrawable(R.drawable.ic_arrow_back);
+            getSupportActionBar().setHomeAsUpIndicator(drawable);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
+    }
+
+    @Override
+    public void disposeProfileDetail() {
+        if (getSupportActionBar() != null){
+            Drawable drawable = findDrawable(R.drawable.ic_insta_camera);
+            getSupportActionBar().setHomeAsUpIndicator(drawable);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.remove(profileDetailsFragment);
+        transaction.show(active);
+        transaction.commit();
+
+        profileDetailsFragment = null;
     }
 
     @Override
@@ -171,23 +203,29 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
         FragmentManager fm = getSupportFragmentManager();
         switch (item.getItemId()){
             case R.id.menu_bottom_home:
+                if (profileDetailsFragment != null)
+                    disposeProfileDetail();
                 fm.beginTransaction().hide(active).show(homeFragment).commit();
                 scrollToolbarEnebled(false);
-                homePresenter.findFeed();
+               // homePresenter.findFeed();
                 active = homeFragment;
                 return true;
 
             case R.id.menu_bottom_search:
-                fm.beginTransaction().hide(active).show(searchFragment).commit();
-                active = searchFragment;
-                scrollToolbarEnebled(false);
+                if (profileDetailsFragment == null){
+                    fm.beginTransaction().hide(active).show(searchFragment).commit();
+                    active = searchFragment;
+                    scrollToolbarEnebled(false);
+                }
                 return true;
 
             case R.id.menu_bottom_profile:
+                if (profileDetailsFragment != null)
+                    disposeProfileDetail();
                 fm.beginTransaction().hide(active).show(profileFragment).commit();
-                scrollToolbarEnebled(true);
-                profilePresenter.finUser(Database.getInstance().getUser().getUUID());
                 active = profileFragment;
+                scrollToolbarEnebled(true);
+                profilePresenter.finUser();
                 return true;
 
             case R.id.menu_bottom_add:

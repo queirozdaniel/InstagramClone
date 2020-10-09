@@ -11,16 +11,29 @@ import java.util.List;
 public class ProfileLocalDataSource implements ProfileDatasource {
 
     @Override
-    public void findUser(String user, Presenter<UserProfile> presenter) {
+    public void findUser(String uuid, Presenter<UserProfile> presenter) {
         Database db = Database.getInstance();
-        db.findUser(user)
+        db.findUser(uuid)
                 .addOnSuccessListener((Database.OnSuccessListener<User>) usr1 -> {
-                    db.findPosts(usr1.getUuid())
+                    db.findPosts(uuid)
                             .addOnSuccessListener((Database.OnSuccessListener<List<Post>>) post -> {
-                                presenter.onSuccess(new UserProfile(usr1, post));
-                                presenter.onComplete();
+                                db.following(db.getUser().getUUID(), uuid)
+                                        .addOnSuccessListener((Database.OnSuccessListener<Boolean>) following -> {
+                                            presenter.onSuccess(new UserProfile(usr1, post, following));
+                                            presenter.onComplete();
+                                        });
                             });
                 });
+    }
+
+    @Override
+    public void follow(String user) {
+        Database.getInstance().follow(Database.getInstance().getUser().getUUID(), user);
+    }
+
+    @Override
+    public void unfollow(String user) {
+        Database.getInstance().unfollow(Database.getInstance().getUser().getUUID(), user);
     }
 
 }
