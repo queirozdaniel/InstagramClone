@@ -9,6 +9,7 @@ public class User {
     private String name;
     private int following, followers, posts;
     private Uri uri;
+    private String photoUrl;
 
     public String getEmail() {
         return email;
@@ -64,6 +65,14 @@ public class User {
 
     public void setPosts(int posts) {
         this.posts = posts;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
     }
 
     @Override

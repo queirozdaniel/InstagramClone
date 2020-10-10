@@ -27,6 +27,7 @@ import com.danielqueiroz.instagramclone.common.component.MediaHelper;
 import com.danielqueiroz.instagramclone.common.view.AbstractActivity;
 import com.danielqueiroz.instagramclone.main.presentation.MainActivity;
 import com.danielqueiroz.instagramclone.register.datasource.RegisterDataSource;
+import com.danielqueiroz.instagramclone.register.datasource.RegisterFireDataSource;
 import com.danielqueiroz.instagramclone.register.datasource.RegisterLocalDataSource;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -83,7 +84,7 @@ public class RegisterActivity extends AbstractActivity implements RegisterView, 
 
     @Override
     protected void onInject() {
-        RegisterDataSource dataSource = new RegisterLocalDataSource();
+        RegisterDataSource dataSource = new RegisterFireDataSource();
         presenter = new RegisterPresenter(dataSource);
         presenter.setRegisterView(this);
 

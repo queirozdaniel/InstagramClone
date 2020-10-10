@@ -28,6 +28,7 @@ public class Database {
         feed =  new HashMap<>();
         followers =  new HashMap<>();
 
+        /*
         String email =  "dann@gmail.com";
         String password = "123";
         String name = "Dann";
@@ -39,7 +40,7 @@ public class Database {
             name = "user" + i;
             init(email, password, name);
         }
-
+        */
         //usersAuth.add(new UserAuth("daniel@gmail.com", "1234"));
         //usersAuth.add(new UserAuth("user@gmail.com", "12345"));
         //usersAuth.add(new UserAuth("userx@gmail.com", "123"));

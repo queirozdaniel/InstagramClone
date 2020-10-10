@@ -8,8 +8,9 @@ import com.danielqueiroz.instagramclone.common.model.UserAuth;
 import com.danielqueiroz.instagramclone.common.presenter.Presenter;
 import com.danielqueiroz.instagramclone.common.util.Strings;
 import com.danielqueiroz.instagramclone.register.datasource.RegisterDataSource;
+import com.google.firebase.auth.FirebaseUser;
 
-public class RegisterPresenter implements Presenter<UserAuth> {
+public class RegisterPresenter implements Presenter<FirebaseUser> {
 
     private RegisterView registerView;
     private RegisterView.EmailView emailView;
@@ -59,7 +60,7 @@ public class RegisterPresenter implements Presenter<UserAuth> {
         this.name = name;
 
         namePasswordView.showProgressBar();
-        dataSource.createUser(name, email, password, this);
+        dataSource.createUser(name.toLowerCase(), email, password, this);
     }
 
     public String getName() {
@@ -93,7 +94,7 @@ public class RegisterPresenter implements Presenter<UserAuth> {
     }
 
     @Override
-    public void onSuccess(UserAuth response) {
+    public void onSuccess(FirebaseUser response) {
         registerView.showNextView(RegisterSteps.WELCOME);
     }
 
