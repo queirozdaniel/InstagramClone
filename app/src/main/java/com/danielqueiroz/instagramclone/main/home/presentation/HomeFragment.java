@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.danielqueiroz.instagramclone.R;
 import com.danielqueiroz.instagramclone.common.model.Feed;
 import com.danielqueiroz.instagramclone.common.model.User;
@@ -143,11 +144,12 @@ public class HomeFragment extends AbstractFragment<HomePresenter> implements Mai
         }
 
         public void bind(Feed feed){
-            this.imagePost.setImageURI(feed.getUri());
+            Glide.with(itemView.getContext()).load(feed.getPhotoUrl()).into(this.imagePost);
             this.textViewCaption.setText(feed.getCaption());
 
             User publisher = feed.getPublisher();
             if (publisher != null){
+                Glide.with(itemView.getContext()).load(publisher.getPhotoUrl()).into(this.imageUser);
                 this.imageUser.setImageURI(publisher.getUri());
                 this.textViewUsername.setText(publisher.getName());
             }

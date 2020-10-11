@@ -9,10 +9,12 @@ import com.danielqueiroz.instagramclone.common.model.UserAuth;
 import com.danielqueiroz.instagramclone.common.view.AbstractActivity;
 import com.danielqueiroz.instagramclone.common.component.LoadingButton;
 import com.danielqueiroz.instagramclone.login.datasource.LoginDataSource;
+import com.danielqueiroz.instagramclone.login.datasource.LoginFireDataSource;
 import com.danielqueiroz.instagramclone.login.datasource.LoginLocalDataSource;
 import com.danielqueiroz.instagramclone.main.presentation.MainActivity;
 import com.danielqueiroz.instagramclone.register.presentation.RegisterActivity;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -39,7 +41,7 @@ public class LoginActivity extends AbstractActivity implements LoginView {
         super.onCreate(savedInstanceState);
         setStatusBarDark();
 
-        UserAuth user = Database.getInstance().getUser();
+        String user = FirebaseAuth.getInstance().getUid();
         if (user != null){
             onUserLoged();
         }
@@ -47,7 +49,7 @@ public class LoginActivity extends AbstractActivity implements LoginView {
 
     @Override
     protected void onInject() {
-        LoginDataSource dataSource = new LoginLocalDataSource();
+        LoginDataSource dataSource = new LoginFireDataSource();
         presenter = new LoginPresenter(this, dataSource);
     }
 

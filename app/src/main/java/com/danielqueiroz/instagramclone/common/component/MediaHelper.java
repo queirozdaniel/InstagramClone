@@ -175,17 +175,14 @@ public class MediaHelper {
         return context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA);
     }
 
-    public Camera getCameraInstance() {
+    public Camera getCameraInstance(Fragment fragment, Context context) {
         Camera camera = null;
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                    && getContext() != null
-                    && getContext().checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                if (activity != null)
-                    activity.requestPermissions(new String[]{Manifest.permission.CAMERA}, 300);
-                else
+                    && fragment != null
+                    && context.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                     fragment.requestPermissions(new String[]{Manifest.permission.CAMERA}, 300);
-
+                    return null;
             }
 
             camera = Camera.open();

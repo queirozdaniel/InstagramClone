@@ -25,7 +25,7 @@ public class RegisterFireDataSource implements RegisterDataSource {
                     FirebaseFirestore.getInstance().collection("user")
                             .document(authResult.getUser().getUid())
                             .set(user)
-                            .addOnSuccessListener(aVoid -> presenter.onSuccess(user))
+                            .addOnSuccessListener(aVoid -> presenter.onSuccess(authResult.getUser()))
                             .addOnCompleteListener(task -> presenter.onComplete());
                 }).addOnFailureListener(e -> {
                     presenter.onError(e.getMessage());

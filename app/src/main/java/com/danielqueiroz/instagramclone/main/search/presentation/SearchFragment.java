@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.danielqueiroz.instagramclone.R;
 import com.danielqueiroz.instagramclone.common.model.User;
 import com.danielqueiroz.instagramclone.common.presenter.Presenter;
@@ -168,7 +169,7 @@ public class SearchFragment extends AbstractFragment<SearchPresenter> implements
         public void bind(User user){
             this.textViewName.setText(user.getName());
             this.textViewUsername.setText(user.getName());
-            this.imagePost.setImageURI(user.getUri());
+            Glide.with(itemView.getContext()).load(user.getPhotoUrl()).into(imagePost);
         }
     }
 

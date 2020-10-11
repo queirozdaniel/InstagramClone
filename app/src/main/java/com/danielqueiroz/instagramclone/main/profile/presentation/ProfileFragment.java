@@ -22,12 +22,14 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.danielqueiroz.instagramclone.R;
 import com.danielqueiroz.instagramclone.common.model.Database;
 import com.danielqueiroz.instagramclone.common.model.Post;
 import com.danielqueiroz.instagramclone.common.view.AbstractFragment;
 import com.danielqueiroz.instagramclone.main.presentation.MainView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -122,15 +124,8 @@ public class ProfileFragment extends AbstractFragment<ProfilePresenter>  impleme
     }
 
     @Override
-    public void showPhoto(Uri photo) {
-        try {
-            if (getContext() != null && getContext().getContentResolver() != null) {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), photo);
-                imageViewProfile.setImageBitmap(bitmap);
-            }
-        } catch (IOException ex) {
-            Log.e("Error Profile Image", ex.getMessage());
-        }
+    public void showPhoto(String photo) {
+        Glide.with(getContext()).load(photo).into(imageViewProfile);
     }
 
     @Override
@@ -142,6 +137,7 @@ public class ProfileFragment extends AbstractFragment<ProfilePresenter>  impleme
 
         if (editProfile){
             button.setText(getString(R.string.edit_profile));
+            button.setTag(null);
         } else if (follow){
             button.setText(getString(R.string.unfollow));
             button.setTag(false);
@@ -154,9 +150,12 @@ public class ProfileFragment extends AbstractFragment<ProfilePresenter>  impleme
     @OnClick(R.id.profile_button_edit_profile)
     public void onButtonFollowClick(){
         Boolean follow = (Boolean) button.getTag();
-        button.setText(follow ? R.string.unfollow : R.string.follow);
-        presenter.follow(follow);
-        button.setTag(!follow);
+
+        if (follow != null){
+            button.setText(follow ? R.string.unfollow : R.string.follow);
+            presenter.follow(follow);
+            button.setTag(!follow);
+        }
     }
 
     @Override
@@ -174,7 +173,7 @@ public class ProfileFragment extends AbstractFragment<ProfilePresenter>  impleme
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case android.R.id.home:
-                if (!presenter.getUser().equals(Database.getInstance().getUser().getUUID()))
+                if (!presenter.getUser().equals(FirebaseAuth.getInstance().getUid()))
                     mainView.disposeProfileDetail();
                 break;
         }
@@ -189,7 +188,6 @@ public class ProfileFragment extends AbstractFragment<ProfilePresenter>  impleme
     private class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
 
         private List<Post> posts = new ArrayList<>();
-
 
         @NonNull
         @Override
@@ -228,7 +226,7 @@ public class ProfileFragment extends AbstractFragment<ProfilePresenter>  impleme
         }
 
         public void bind(Post post){
-            this.imagePost.setImageURI(post.getUri());
+            Glide.with(itemView.getContext()).load(post.getPhotoUrl()).into(imagePost);
         }
     }
 

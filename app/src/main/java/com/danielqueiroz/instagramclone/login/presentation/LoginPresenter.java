@@ -9,8 +9,9 @@ import com.danielqueiroz.instagramclone.common.model.UserAuth;
 import com.danielqueiroz.instagramclone.common.presenter.Presenter;
 import com.danielqueiroz.instagramclone.common.util.Strings;
 import com.danielqueiroz.instagramclone.login.datasource.LoginDataSource;
+import com.google.firebase.auth.FirebaseUser;
 
-public class LoginPresenter implements Presenter<UserAuth> {
+public class LoginPresenter implements Presenter<FirebaseUser> {
     private final LoginView view;
     private final LoginDataSource dataSource;
 
@@ -30,7 +31,7 @@ public class LoginPresenter implements Presenter<UserAuth> {
     }
 
     @Override
-    public void onSuccess(UserAuth userAuth) {
+    public void onSuccess(FirebaseUser userAuth) {
         view.onUserLoged();
     }
 

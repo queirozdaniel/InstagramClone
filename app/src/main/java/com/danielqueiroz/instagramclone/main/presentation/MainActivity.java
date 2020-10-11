@@ -21,14 +21,17 @@ import com.danielqueiroz.instagramclone.main.camera.presentation.AddActivity;
 import com.danielqueiroz.instagramclone.R;
 import com.danielqueiroz.instagramclone.common.view.AbstractActivity;
 import com.danielqueiroz.instagramclone.main.home.datasource.HomeDataSource;
+import com.danielqueiroz.instagramclone.main.home.datasource.HomeFireDataSource;
 import com.danielqueiroz.instagramclone.main.home.datasource.HomeLocalDataSource;
 import com.danielqueiroz.instagramclone.main.home.presentation.HomeFragment;
 import com.danielqueiroz.instagramclone.main.home.presentation.HomePresenter;
 import com.danielqueiroz.instagramclone.main.profile.database.ProfileDatasource;
+import com.danielqueiroz.instagramclone.main.profile.database.ProfileFireDataSource;
 import com.danielqueiroz.instagramclone.main.profile.database.ProfileLocalDataSource;
 import com.danielqueiroz.instagramclone.main.profile.presentation.ProfileFragment;
 import com.danielqueiroz.instagramclone.main.profile.presentation.ProfilePresenter;
 import com.danielqueiroz.instagramclone.main.search.datasource.SearchDataSource;
+import com.danielqueiroz.instagramclone.main.search.datasource.SearchFireDataSource;
 import com.danielqueiroz.instagramclone.main.search.datasource.SearchLocalDataSource;
 import com.danielqueiroz.instagramclone.main.search.presentation.SearchFragment;
 import com.danielqueiroz.instagramclone.main.search.presentation.SearchPresenter;
@@ -83,9 +86,9 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
 
     @Override
     protected void onInject() {
-        ProfileDatasource profileDatasource = new ProfileLocalDataSource();
-        HomeDataSource homeDataSource = new HomeLocalDataSource();
-        SearchDataSource searchDataSource = new SearchLocalDataSource();
+        ProfileDatasource profileDatasource = new ProfileFireDataSource();
+        HomeDataSource homeDataSource = new HomeFireDataSource();
+        SearchDataSource searchDataSource = new SearchFireDataSource();
 
         profilePresenter = new ProfilePresenter(profileDatasource);
         homePresenter = new HomePresenter(homeDataSource);
@@ -102,7 +105,7 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
         fragmentManager.beginTransaction().add(R.id.main_fragment, profileFragment).hide(profileFragment).commit();
         //fragmentManager.beginTransaction().add(R.id.main_fragment, cameraFragment).hide(cameraFragment).commit();
         fragmentManager.beginTransaction().add(R.id.main_fragment, searchFragment).hide(searchFragment).commit();
-        fragmentManager.beginTransaction().add(R.id.main_fragment, homeFragment).hide(homeFragment).commit();
+        fragmentManager.beginTransaction().add(R.id.main_fragment, homeFragment).commit();
 
     }
 
@@ -163,7 +166,7 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
     @Override
     public void showProfile(String user) {
 
-        ProfileDatasource dataSource = new ProfileLocalDataSource();
+        ProfileDatasource dataSource = new ProfileFireDataSource();
         ProfilePresenter profilePresenter = new ProfilePresenter(dataSource, user);
 
         profileDetailsFragment = ProfileFragment.newInstance(this, profilePresenter);
@@ -207,7 +210,7 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
                     disposeProfileDetail();
                 fm.beginTransaction().hide(active).show(homeFragment).commit();
                 scrollToolbarEnebled(false);
-               // homePresenter.findFeed();
+               homePresenter.findFeed();
                 active = homeFragment;
                 return true;
 

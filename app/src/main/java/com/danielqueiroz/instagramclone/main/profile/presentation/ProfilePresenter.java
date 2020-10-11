@@ -7,6 +7,7 @@ import com.danielqueiroz.instagramclone.common.model.UserProfile;
 import com.danielqueiroz.instagramclone.common.presenter.Presenter;
 import com.danielqueiroz.instagramclone.main.presentation.MainView;
 import com.danielqueiroz.instagramclone.main.profile.database.ProfileDatasource;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public class ProfilePresenter implements Presenter<UserProfile> {
     private MainView.ProfileView view;
 
     public ProfilePresenter(ProfileDatasource datasource) {
-        this(datasource, Database.getInstance().getUser().getUUID());
+        this(datasource, FirebaseAuth.getInstance().getUid());
     }
 
     public ProfilePresenter(ProfileDatasource datasource, String user) {
@@ -49,7 +50,7 @@ public class ProfilePresenter implements Presenter<UserProfile> {
         User user = response.getUser();
         List<Post> posts = response.getPosts();
 
-        boolean editProfile = user.getUuid().equals(Database.getInstance().getUser().getUUID());
+        boolean editProfile = user.getUuid().equals(FirebaseAuth.getInstance().getUid());
 
         view.showData(user.getName(),
                 String.valueOf(user.getFollowing()),
@@ -62,7 +63,7 @@ public class ProfilePresenter implements Presenter<UserProfile> {
         view.showPosts(posts);
 
         if (user.getUri() != null){
-            view.showPhoto(user.getUri());
+            view.showPhoto(user.getPhotoUrl());
         }
     }
 

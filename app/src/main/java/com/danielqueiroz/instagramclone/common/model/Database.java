@@ -28,12 +28,12 @@ public class Database {
         feed =  new HashMap<>();
         followers =  new HashMap<>();
 
-        /*
-        String email =  "dann@gmail.com";
-        String password = "123";
+
+        String email =  "user1@gmail.com";
+        String password = "123456";
         String name = "Dann";
         init(email, password, name);
-
+  /*
         for (int i = 0; i < 20; i++) {
             email =  "user"+ i+"@gmail.com";
             password = "1223";

@@ -8,6 +8,8 @@ import android.os.Build;
 import android.os.Bundle;
 
 import com.danielqueiroz.instagramclone.common.view.AbstractActivity;
+import com.danielqueiroz.instagramclone.main.camera.datasource.AddDataSource;
+import com.danielqueiroz.instagramclone.main.camera.datasource.AddFireDataSource;
 import com.danielqueiroz.instagramclone.main.camera.datasource.AddLocalDataSource;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -22,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.danielqueiroz.instagramclone.R;
 
@@ -34,6 +37,9 @@ public class AddCaptionActivity extends AbstractActivity implements AddCaptionVi
 
     @BindView(R.id.main_add_caption_edit_text)
     EditText editText;
+
+    @BindView(R.id.add_progress_bar)
+    ProgressBar progressBar;
 
     private Uri uri;
     private AddPresenter presenter;
@@ -67,7 +73,7 @@ public class AddCaptionActivity extends AbstractActivity implements AddCaptionVi
         uri = getIntent().getExtras().getParcelable("uri");
         imageView.setImageURI(uri);
 
-        AddLocalDataSource dataSource = new AddLocalDataSource();
+        AddDataSource dataSource = new AddFireDataSource();
         presenter = new AddPresenter(this, dataSource);
 
     }
@@ -86,7 +92,6 @@ public class AddCaptionActivity extends AbstractActivity implements AddCaptionVi
                 return true;
             case R.id.action_share:
                 presenter.createPost(uri, editText.getText().toString());
-                finish();
                 return true;
         }
 
@@ -94,8 +99,18 @@ public class AddCaptionActivity extends AbstractActivity implements AddCaptionVi
     }
 
     @Override
-    public void postSaved() {
+    public void showProgressBar() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
 
+    @Override
+    public void hideProgressBar() {
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void postSaved() {
+        finish();
     }
 
     @Override
