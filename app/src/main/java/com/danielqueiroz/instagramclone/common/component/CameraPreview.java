@@ -48,6 +48,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             for (Camera.Size size : supportedPictureSizes){
                 w = size.width;
                 h = size.height;
+                break;
             }
             parameters.setPreviewSize(w, h);
             parameters.setPictureSize(w, h);

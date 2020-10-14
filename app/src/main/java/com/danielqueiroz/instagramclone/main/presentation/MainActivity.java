@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.danielqueiroz.instagramclone.common.model.Database;
+import com.danielqueiroz.instagramclone.login.presentation.LoginActivity;
 import com.danielqueiroz.instagramclone.main.camera.presentation.AddActivity;
 import com.danielqueiroz.instagramclone.R;
 import com.danielqueiroz.instagramclone.common.view.AbstractActivity;
@@ -199,6 +200,11 @@ public class MainActivity extends AbstractActivity implements BottomNavigationVi
         transaction.commit();
 
         profileDetailsFragment = null;
+    }
+
+    @Override
+    public void logout() {
+        LoginActivity.launch(this);
     }
 
     @Override
