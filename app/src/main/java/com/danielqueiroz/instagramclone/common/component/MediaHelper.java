@@ -97,6 +97,14 @@ public class MediaHelper {
     }
 
     public void chooserCamera() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                && getContext() != null
+                && getContext().checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
+            activity.requestPermissions(new String[]{Manifest.permission.CAMERA}, CropImage.CAMERA_CAPTURE_PERMISSIONS_REQUEST_CODE);
+            return;
+        }
+
         Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (i.resolveActivity(getContext().getPackageManager()) != null) {
             File photoFile = null;

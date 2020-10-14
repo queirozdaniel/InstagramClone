@@ -62,7 +62,7 @@ public class ProfilePresenter implements Presenter<UserProfile> {
 
         view.showPosts(posts);
 
-        if (user.getUri() != null){
+        if (user.getPhotoUrl() != null){
             view.showPhoto(user.getPhotoUrl());
         }
     }
